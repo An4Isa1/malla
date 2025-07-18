@@ -38,8 +38,8 @@
       margin: 10px 0;
       padding: 10px;
       cursor: pointer;
-      position: relative;
       user-select: none;
+      position: relative;
     }
     .materia.bloqueada {
       opacity: 0.5;
@@ -58,31 +58,6 @@
     .materia.activa .requisitos {
       display: block;
     }
-    .profesor-notas {
-      margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px solid #ccc;
-      font-size: 0.9em;
-      user-select: auto;
-    }
-    .profesor-notas label {
-      display: block;
-      margin: 5px 0 2px;
-    }
-    .profesor-notas input[type="text"],
-    .profesor-notas input[type="number"] {
-      width: 100%;
-      padding: 5px;
-      box-sizing: border-box;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      font-size: 1em;
-    }
-    .promedio {
-      margin-top: 8px;
-      font-weight: bold;
-      color: #2e7d32;
-    }
     .semestre-1 { background-color: #d6eaf8; }
     .semestre-2 { background-color: #aed6f1; }
     .semestre-3 { background-color: #85c1e9; }
@@ -97,7 +72,6 @@
       padding: 5px 10px;
       cursor: pointer;
     }
-    /* Estilos para tabla resumen */
     .resumen {
       margin-top: 40px;
       background: white;
@@ -125,6 +99,37 @@
     th {
       background-color: #aed6f1;
     }
+    /* Formulario al final */
+    #formularioDetalle {
+      margin-top: 40px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      display: none;
+    }
+    #formularioDetalle label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #formularioDetalle input[type="text"],
+    #formularioDetalle input[type="number"] {
+      width: 100%;
+      padding: 7px;
+      margin-top: 4px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+    #formularioDetalle .promedio {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
   </style>
 </head>
 <body>
@@ -147,229 +152,291 @@
           <th>Definitiva</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Se llena dinámicamente -->
-      </tbody>
+      <tbody></tbody>
     </table>
   </div>
 
-  <script>
-    const materiasPorSemestre = [
-      [
-      ["Economía I (Introducción a la Economía)", [], "semestre-1"],
-      ["Historia Económica General", [], "semestre-1"],
-      ["Matemáticas I", [], "semestre-1"],
-      ["Expresión Oral y Escrita", [], "semestre-1"],
-      ["Metodología de la Investigación", [], "semestre-1"],
-      ["Cátedra Neogranadina", [], "semestre-1"],
-      ["Principios Constitucionales", [], "semestre-1"],
-      ];
-      [
-      ["Microeconomía I", ["Economía I (Introducción a la Economía)"], "semestre-2"],
-      ["Historia Económica Colombiana", ["Historia Económica General"], "semestre-2"],
-      ["Matemáticas II", ["Matemáticas I"], "semestre-2"],
-      ["Estadística I", [], "semestre-2"],
-      ["Álgebra Lineal", [], "semestre-2"],
-      ["Humanidades I", [], "semestre-2"],
-      ["Extensión Cultural y Deportiva", [], "semestre-2"],
-      ];
-      [
-      ["Microeconomía II", ["Microeconomía I"], "semestre-3"],
-      ["Macroeconomía I", ["Microeconomía I"], "semestre-3"],
-      ["Matemáticas III", ["Matemáticas II"], "semestre-3"],
-      ["Estadística II", ["Estadística I"], "semestre-3"],
-      ["Medición Económica", ["Microeconomía I"], "semestre-3"],
-      ];
-      [
-      ["Microeconomía III", ["Microeconomía II"], "semestre-4"],
-      ["Macroeconomía II", ["Macroeconomía I"], "semestre-4"],
-      ["Economía Matemática", ["Matemáticas III"], "semestre-4"],
-      ["Estadística III", ["Estadística I"], "semestre-4"],
-      ["Contabilidad General", [], "semestre-4"],
-      ];
-      [
-      ["Macroeconomía III", ["Microeconomía III", "Macroeconomía II", "Economía Matemática"], "semestre-5"],
-      ["Doctrinas Económicas I", [], "semestre-5"],
-      ["Econometría I", [], "semestre-5"],
-      ["Énfasis I", [], "semestre-5"],
-      ["Matemáticas Financieras", ["Estadística III"], "semestre-5"],
-      ["Contabilidad de Costos", ["Contabilidad General"], "semestre-5"],
-      ];
-      [
-      ["Crecimiento Económico", ["Macroeconomía III"], "semestre-6"],
-      ["Doctrinas Económicas II", ["Doctrinas Económicas I"], "semestre-6"],
-      ["Econometría II", ["Econometría I"], "semestre-6"],
-      ["Énfasis II", [], "semestre-6"],
-      ["Teoría de la Decisión", [], "semestre-6"],
-      ["Análisis Financiero", ["Contabilidad de Costos"], "semestre-6"],
-      ];
-      [
-      ["Teoría y Política Fiscal", ["Crecimiento Económico"], "semestre-7"],
-      ["Desarrollo Económico", [], "semestre-7"],
-      ["Teoría y Política Monetaria y Cambiaria", [], "semestre-7"],
-      ["Énfasis III", [], "semestre-7"],
-      ["Formulación y Evaluación de Proyectos", [], "semestre-7"],
-      ["Humanidades II", [], "semestre-7"],
-      ];
-      [
-      ["Electiva I en lo Público", [], "semestre-8"],
-      ["Electiva I en lo Económico", [], "semestre-8"],
-      ["Economía Internacional", [], "semestre-8"],
-      ["Énfasis IV", [], "semestre-8"],
-      ["Evaluación Económica y Social de Proyectos", [], "semestre-8"],
-      ["Ética Profesional", [], "semestre-8"],
-      ];
-      [
-      ["Electiva II en lo Público", [], "semestre-9"],
-      ["Electiva II en lo Económico", [], "semestre-9"],
-      ["Electiva en lo Internacional", [], "semestre-9"],
-      ["Electiva de Énfasis", ["Estadística I"], "semestre-9"],
-      ["Seminario de Grado", [], "semestre-9"]
-      ];
-    ];
+  <!-- Formulario detalle al final -->
+  <div id="formularioDetalle">
+    <h3 id="tituloMateria">Materia</h3>
+    <label for="profesor">Profesor:</label>
+    <input type="text" id="profesor" placeholder="Nombre del profesor" />
 
-    let estado = JSON.parse(localStorage.getItem('estadoPensum')) || {};
+    <label for="nota1">Nota corte 1 (30%):</label>
+    <input type="number" id="nota1" min="0" max="5" step="0.01" />
 
-    function guardar() {
-      localStorage.setItem('estadoPensum', JSON.stringify(estado));
-    }
+    <label for="nota2">Nota corte 2 (30%):</label>
+    <input type="number" id="nota2" min="0" max="5" step="0.01" />
 
-    function reiniciar() {
-      if(confirm("¿Deseas reiniciar todo el progreso?")) {
-        estado = {};
-        guardar();
-        renderPensum();
-      }
-    }
+    <label for="nota3">Nota corte 3 (40%):</label>
+    <input type="number" id="nota3" min="0" max="5" step="0.01" />
 
-    function requisitosAprobados(requisitos) {
-      return requisitos.every(req => estado[req]?.aprobada === true);
-    }
+    <div class="promedio" id="promedioDefinitiva">Definitiva: 0.00</div>
 
-    function calcularDefinitiva(n1, n2, n3) {
-      return (n1*0.3 + n2*0.3 + n3*0.4).toFixed(2);
-    }
+    <button id="guardarDatos">Guardar datos</button>
+  </div>
 
-    function aprobarMateria(nombre) {
-      if(estado[nombre]?.aprobada) {
-        delete estado[nombre];
-      } else {
-        estado[nombre] = {
-          aprobada: true,
-          profesor: estado[nombre]?.profesor || "",
-          n1: estado[nombre]?.n1 || "",
-          n2: estado[nombre]?.n2 || "",
-          n3: estado[nombre]?.n3 || "",
-          definitiva: estado[nombre]?.definitiva || ""
-        };
-      }
+<script>
+  const materiasPorSemestre = [
+    ["Economía I (Introducción a la Economía)", [], "semestre-1"],
+    ["Historia Económica General", [], "semestre-1"],
+    ["Matemáticas I", [], "semestre-1"],
+    ["Expresión Oral y Escrita", [], "semestre-1"],
+    ["Metodología de la Investigación", [], "semestre-1"],
+    ["Cátedra Neogranadina", [], "semestre-1"],
+    ["Principios Constitucionales", [], "semestre-1"],
+
+    ["Microeconomía I", ["Economía I (Introducción a la Economía)"], "semestre-2"],
+    ["Historia Económica Colombiana", ["Historia Económica General"], "semestre-2"],
+    ["Matemáticas II", ["Matemáticas I"], "semestre-2"],
+    ["Estadística I", [], "semestre-2"],
+    ["Álgebra Lineal", [], "semestre-2"],
+    ["Humanidades I", [], "semestre-2"],
+    ["Extensión Cultural y Deportiva", [], "semestre-2"],
+
+    ["Microeconomía II", ["Microeconomía I"], "semestre-3"],
+    ["Macroeconomía I", ["Microeconomía I"], "semestre-3"],
+    ["Matemáticas III", ["Matemáticas II"], "semestre-3"],
+    ["Estadística II", ["Estadística I"], "semestre-3"],
+    ["Medición Económica", ["Microeconomía I"], "semestre-3"],
+
+    ["Microeconomía III", ["Microeconomía II"], "semestre-4"],
+    ["Macroeconomía II", ["Macroeconomía I"], "semestre-4"],
+    ["Economía Matemática", ["Matemáticas III"], "semestre-4"],
+    ["Estadística III", ["Estadística I"], "semestre-4"],
+    ["Contabilidad General", [], "semestre-4"],
+
+    ["Macroeconomía III", ["Microeconomía III", "Macroeconomía II", "Economía Matemática"], "semestre-5"],
+    ["Doctrinas Económicas I", [], "semestre-5"],
+    ["Econometría I", [], "semestre-5"],
+    ["Énfasis I", [], "semestre-5"],
+    ["Matemáticas Financieras", ["Estadística III"], "semestre-5"],
+    ["Contabilidad de Costos", ["Contabilidad General"], "semestre-5"],
+
+    ["Crecimiento Económico", ["Macroeconomía III"], "semestre-6"],
+    ["Doctrinas Económicas II", ["Doctrinas Económicas I"], "semestre-6"],
+    ["Econometría II", ["Econometría I"], "semestre-6"],
+    ["Énfasis II", [], "semestre-6"],
+    ["Teoría de la Decisión", [], "semestre-6"],
+    ["Análisis Financiero", ["Contabilidad de Costos"], "semestre-6"],
+
+    ["Teoría y Política Fiscal", ["Crecimiento Económico"], "semestre-7"],
+    ["Desarrollo Económico", [], "semestre-7"],
+    ["Teoría y Política Monetaria y Cambiaria", [], "semestre-7"],
+    ["Énfasis III", [], "semestre-7"],
+    ["Formulación y Evaluación de Proyectos", [], "semestre-7"],
+    ["Humanidades II", [], "semestre-7"],
+
+    ["Electiva I en lo Público", [], "semestre-8"],
+    ["Electiva I en lo Económico", [], "semestre-8"],
+    ["Economía Internacional", [], "semestre-8"],
+    ["Énfasis IV", [], "semestre-8"],
+    ["Evaluación Económica y Social de Proyectos", [], "semestre-8"],
+    ["Ética Profesional", [], "semestre-8"],
+
+    ["Electiva II en lo Público", [], "semestre-9"],
+    ["Electiva II en lo Económico", [], "semestre-9"],
+    ["Electiva en lo Internacional", [], "semestre-9"],
+    ["Electiva de Énfasis", ["Estadística I"], "semestre-9"],
+    ["Seminario de Grado", [], "semestre-9"]
+  ];
+
+  let estado = JSON.parse(localStorage.getItem('estadoPensum')) || {};
+  let materiaSeleccionada = null;
+
+  function guardar() {
+    localStorage.setItem('estadoPensum', JSON.stringify(estado));
+  }
+
+  function reiniciar() {
+    if(confirm("¿Deseas reiniciar todo el progreso?")) {
+      estado = {};
       guardar();
       renderPensum();
+      ocultarFormularioDetalle();
+    }
+  }
+
+  function requisitosAprobados(requisitos) {
+    return requisitos.every(req => estado[req]?.aprobada === true);
+  }
+
+  function calcularDefinitiva(n1, n2, n3) {
+    return (n1*0.3 + n2*0.3 + n3*0.4).toFixed(2);
+  }
+
+  function aprobarMateria(nombre) {
+    if(estado[nombre]?.aprobada) {
+      delete estado[nombre];
+      if(materiaSeleccionada === nombre) {
+        ocultarFormularioDetalle();
+      }
+    } else {
+      estado[nombre] = {
+        aprobada: true,
+        profesor: estado[nombre]?.profesor || "",
+        n1: estado[nombre]?.n1 || "",
+        n2: estado[nombre]?.n2 || "",
+        n3: estado[nombre]?.n3 || "",
+        definitiva: estado[nombre]?.definitiva || ""
+      };
+    }
+    guardar();
+    renderPensum();
+  }
+
+  function mostrarFormularioDetalle(nombre) {
+    const form = document.getElementById('formularioDetalle');
+    const titulo = document.getElementById('tituloMateria');
+    const profesor = document.getElementById('profesor');
+    const nota1 = document.getElementById('nota1');
+    const nota2 = document.getElementById('nota2');
+    const nota3 = document.getElementById('nota3');
+    const promedio = document.getElementById('promedioDefinitiva');
+
+    materiaSeleccionada = nombre;
+    titulo.textContent = nombre;
+
+    const datos = estado[nombre] || { profesor: '', n1: '', n2: '', n3: '', definitiva: '0.00' };
+    profesor.value = datos.profesor || '';
+    nota1.value = datos.n1 || '';
+    nota2.value = datos.n2 || '';
+    nota3.value = datos.n3 || '';
+    promedio.textContent = `Definitiva: ${datos.definitiva || '0.00'}`;
+
+    form.style.display = 'block';
+  }
+
+  function ocultarFormularioDetalle() {
+    const form = document.getElementById('formularioDetalle');
+    materiaSeleccionada = null;
+    form.style.display = 'none';
+  }
+
+  function actualizarDefinitiva() {
+    const profesor = document.getElementById('profesor').value.trim();
+    const n1 = parseFloat(document.getElementById('nota1').value);
+    const n2 = parseFloat(document.getElementById('nota2').value);
+    const n3 = parseFloat(document.getElementById('nota3').value);
+    const promedio = document.getElementById('promedioDefinitiva');
+
+    if(profesor && !isNaN(n1) && !isNaN(n2) && !isNaN(n3)) {
+      const definitiva = calcularDefinitiva(n1, n2, n3);
+      promedio.textContent = `Definitiva: ${definitiva}`;
+      return definitiva;
+    } else {
+      promedio.textContent = `Definitiva: 0.00`;
+      return null;
+    }
+  }
+
+  document.getElementById('profesor').addEventListener('input', actualizarDefinitiva);
+  document.getElementById('nota1').addEventListener('input', actualizarDefinitiva);
+  document.getElementById('nota2').addEventListener('input', actualizarDefinitiva);
+  document.getElementById('nota3').addEventListener('input', actualizarDefinitiva);
+
+  document.getElementById('guardarDatos').addEventListener('click', () => {
+    if(!materiaSeleccionada) return alert('Selecciona una materia para guardar datos.');
+
+    const profesor = document.getElementById('profesor').value.trim();
+    const n1 = parseFloat(document.getElementById('nota1').value);
+    const n2 = parseFloat(document.getElementById('nota2').value);
+    const n3 = parseFloat(document.getElementById('nota3').value);
+
+    if(!profesor || isNaN(n1) || isNaN(n2) || isNaN(n3)) {
+      return alert('Por favor completa todos los campos correctamente.');
     }
 
-    function renderResumen() {
-      const tbody = document.querySelector('#tablaResumen tbody');
-      tbody.innerHTML = "";
+    const definitiva = calcularDefinitiva(n1, n2, n3);
 
-      materiasPorSemestre.forEach(([nombre, _, clase]) => {
-        const datos = estado[nombre];
-        if(datos?.aprobada) {
-          const semestreNum = clase.split('-')[1];
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${semestreNum}</td>
-            <td>${nombre}</td>
-            <td>${datos.profesor || ''}</td>
-            <td>${datos.n1 !== undefined ? datos.n1 : ''}</td>
-            <td>${datos.n2 !== undefined ? datos.n2 : ''}</td>
-            <td>${datos.n3 !== undefined ? datos.n3 : ''}</td>
-            <td>${datos.definitiva || ''}</td>
-          `;
-          tbody.appendChild(tr);
-        }
-      });
+    estado[materiaSeleccionada] = {
+      aprobada: true,
+      profesor,
+      n1,
+      n2,
+      n3,
+      definitiva
+    };
+    guardar();
+    renderPensum();
+    alert('Datos guardados.');
+  });
+
+  function renderResumen() {
+    const tbody = document.querySelector('#tablaResumen tbody');
+    tbody.innerHTML = "";
+
+    materiasPorSemestre.forEach(([nombre, _, clase]) => {
+      const datos = estado[nombre];
+      if(datos?.aprobada) {
+        const semestreNum = clase.split('-')[1];
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${semestreNum}</td>
+          <td>${nombre}</td>
+          <td>${datos.profesor || ''}</td>
+          <td>${datos.n1 !== undefined ? datos.n1 : ''}</td>
+          <td>${datos.n2 !== undefined ? datos.n2 : ''}</td>
+          <td>${datos.n3 !== undefined ? datos.n3 : ''}</td>
+          <td>${datos.definitiva || ''}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    });
+  }
+
+  function renderPensum() {
+    const contenedor = document.getElementById('pensum');
+    contenedor.innerHTML = '';
+
+    // Crear los divs por semestre
+    const semestresDivs = {};
+    for(let i=1; i<=9; i++) {
+      const div = document.createElement('div');
+      div.className = `semestre semestre-${i}`;
+      div.innerHTML = `<h3>Semestre ${i}</h3>`;
+      contenedor.appendChild(div);
+      semestresDivs[`semestre-${i}`] = div;
     }
 
-    function renderPensum() {
-      const contenedor = document.getElementById('pensum');
-      contenedor.innerHTML = '';
+    materiasPorSemestre.forEach(([nombre, requisitos, clase]) => {
+      const materiaDiv = document.createElement('div');
+      materiaDiv.className = 'materia';
 
-      const semestresDivs = {};
-      for(let i=1; i<=9; i++) {
-        const div = document.createElement('div');
-        div.className = `semestre semestre-${i}`;
-        div.innerHTML = `<h3>Semestre ${i}</h3>`;
-        contenedor.appendChild(div);
-        semestresDivs[`semestre-${i}`] = div;
+      const estaAprobada = estado[nombre]?.aprobada;
+      const requisitosOk = requisitosAprobados(requisitos);
+
+      if(!estaAprobada && !requisitosOk) {
+        materiaDiv.classList.add('bloqueada');
+      }
+      if(estaAprobada) {
+        materiaDiv.classList.add('aprobada');
       }
 
-      materiasPorSemestre.forEach(([nombre, requisitos, clase]) => {
-        const materiaDiv = document.createElement('div');
-        materiaDiv.className = 'materia';
+      materiaDiv.innerHTML = `<strong>${nombre}</strong>
+        <div class="requisitos">Requiere: ${requisitos.length ? requisitos.join(", ") : "Ninguno"}</div>
+      `;
 
-        const estaAprobada = estado[nombre]?.aprobada;
-        const requisitosOk = requisitosAprobados(requisitos);
+      materiaDiv.addEventListener('click', () => {
+        if(materiaDiv.classList.contains('bloqueada')) return;
 
-        if(!estaAprobada && !requisitosOk) {
-          materiaDiv.classList.add('bloqueada');
+        aprobarMateria(nombre); // Para tachar o destachar
+
+        // Si quedó aprobada, mostrar formulario con datos para editar
+        if(estado[nombre]?.aprobada) {
+          mostrarFormularioDetalle(nombre);
+        } else if(materiaSeleccionada === nombre) {
+          ocultarFormularioDetalle();
         }
-        if(estaAprobada) {
-          materiaDiv.classList.add('aprobada');
-        }
-
-        materiaDiv.innerHTML = `<strong>${nombre}</strong>
-          <div class="requisitos">Requiere: ${requisitos.length ? requisitos.join(", ") : "Ninguno"}</div>
-        `;
-
-        materiaDiv.addEventListener('click', () => {
-          if(materiaDiv.classList.contains('bloqueada')) return;
-          aprobarMateria(nombre);
-        });
-
-        if(estaAprobada) {
-          const datos = estado[nombre];
-          const formDiv = document.createElement('div');
-          formDiv.className = 'profesor-notas';
-
-          formDiv.innerHTML = `
-            <label>Profesor:</label>
-            <input type="text" value="${datos.profesor || ''}" placeholder="Nombre profesor" />
-            <label>Nota corte 1 (30%):</label>
-            <input type="number" min="0" max="5" step="0.01" value="${datos.n1 || ''}" />
-            <label>Nota corte 2 (30%):</label>
-            <input type="number" min="0" max="5" step="0.01" value="${datos.n2 || ''}" />
-            <label>Nota corte 3 (40%):</label>
-            <input type="number" min="0" max="5" step="0.01" value="${datos.n3 || ''}" />
-            <div class="promedio">Definitiva: ${datos.definitiva || '0.00'}</div>
-          `;
-
-          const inputs = formDiv.querySelectorAll('input');
-          inputs.forEach(input => {
-            input.addEventListener('input', () => {
-              const prof = formDiv.querySelector('input[type="text"]').value.trim();
-              const n1 = parseFloat(formDiv.querySelectorAll('input')[1].value);
-              const n2 = parseFloat(formDiv.querySelectorAll('input')[2].value);
-              const n3 = parseFloat(formDiv.querySelectorAll('input')[3].value);
-
-              if(prof && !isNaN(n1) && !isNaN(n2) && !isNaN(n3)) {
-                const definitiva = calcularDefinitiva(n1, n2, n3);
-                formDiv.querySelector('.promedio').textContent = `Definitiva: ${definitiva}`;
-                estado[nombre] = { aprobada: true, profesor: prof, n1, n2, n3, definitiva };
-                guardar();
-                renderResumen();
-              }
-            });
-          });
-
-          materiaDiv.appendChild(formDiv);
-        }
-
       });
 
-      renderResumen();
-    }
+      semestresDivs[clase].appendChild(materiaDiv);
+    });
 
-    renderPensum();
-  </script>
+    renderResumen();
+  }
+
+  renderPensum();
+</script>
 </body>
 </html>
