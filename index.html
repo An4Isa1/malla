@@ -1,116 +1,119 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pensum Interactivo de Economía</title>
+  <meta charset="UTF-8">
+  <title>Pensum Economía</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
       padding: 20px;
     }
-
     h1 {
       text-align: center;
-      color: #1a5276;
+      margin-bottom: 5px;
+      font-style: italic;
+      font-size: 2.5em;
     }
-
-    .semestre {
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 20px;
+    h2.subtitulo {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 30px;
+      font-style: italic;
+      font-size: 1.5em;
     }
-
-    .materia {
-      display: flex;
-      flex-direction: column;
-      background-color: white;
-      border: 1px solid #ccc;
+    .semester {
+      display: inline-block;
+      vertical-align: top;
+      width: 250px;
+      margin: 10px;
+      border-radius: 10px;
       padding: 10px;
-      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .semester h2 {
+      text-align: center;
+      font-size: 1.2rem;
       margin-bottom: 10px;
-    }
-
-    .materia input,
-    .materia select {
-      margin: 5px 0;
-    }
-
-    .materia label {
       font-weight: bold;
     }
-
-    .completada {
-      background-color: #d4efdf;
+    .subject {
+      font-family: 'Times New Roman', serif;
+      background: #e6eef3;
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 8px;
+      position: relative;
+    }
+    .details {
+      font-family: 'Times New Roman', serif;
+      font-size: 0.85em;
+      margin-top: 6px;
+    }
+    .details label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .details input {
+      width: 100%;
+      margin-bottom: 6px;
+      padding: 4px;
+      font-family: 'Times New Roman', serif;
     }
   </style>
 </head>
-
 <body>
-  <h1>Pensum Interactivo de Economía</h1>
+  <h1>Pensum Economía</h1>
+  <h2 class="subtitulo">UMNG</h2>
+  <div id="grid"></div>
+  <script>
+    const semesterColors = [
+      "#d6eaf8", "#aed6f1", "#85c1e9", "#7fb3d5",
+      "#5499c7", "#2980b9", "#2471a3", "#1f618d", "#1a5276"
+    ];
 
-  <div class="semestre" style="background-color: #d6eaf8">
-    <h2>Semestre 1️⃣</h2>
-    <div class="materia">
-      <label>Nombre:</label>
-      <input type="text" value="Historia económica general" />
-      <label>Profesor:</label>
-      <input type="text" value="" />
-      <label>Notas (Corte 1, 2, 3):</label>
-      <input type="text" value="" />
-    </div>
-    <!-- Agrega más materias aquí si es necesario -->
-  </div>
+    const semesters = [
+      ["Historia económica general", "Matemáticas I", "Expresión Oral y Escrita", "Metodología de la Investigación", "Cátedra Neogranadina", "Economía I"],
+      ["Microeconomía I", "Historia Económica Colombiana", "Matemáticas II", "Estadística I", "Álgebra Lineal", "Humanidades I", "Extensión Cultural y Deportiva"],
+      ["Microeconomía II", "Macroeconomía I", "Matemáticas III", "Estadística II", "Medición Económica"],
+      ["Microeconomía III", "Macroeconomía II", "Economía Matemática", "Estadística III", "Contabilidad General"],
+      ["Macroeconomía III", "Doctrinas Económicas I", "Econometría I", "Énfasis I", "Matemáticas Financieras", "Contabilidad de Costos"]
+    ];
 
-  <div class="semestre" style="background-color: #aed6f1">
-    <h2>Semestre 2️⃣</h2>
-    <div class="materia">
-      <label>Nombre:</label>
-      <input type="text" value="" />
-      <label>Profesor:</label>
-      <input type="text" value="" />
-      <label>Notas (Corte 1, 2, 3):</label>
-      <input type="text" value="" />
-    </div>
-  </div>
+    const grid = document.getElementById("grid");
 
-  <div class="semestre" style="background-color: #85c1e9">
-    <h2>Semestre 3️⃣</h2>
-    <!-- Materias -->
-  </div>
+    semesters.forEach((subjects, index) => {
+      const semesterDiv = document.createElement("div");
+      semesterDiv.className = "semester";
+      semesterDiv.style.backgroundColor = semesterColors[index];
 
-  <div class="semestre" style="background-color: #7fb3d5">
-    <h2>Semestre 4️⃣</h2>
-    <!-- Materias -->
-  </div>
+      const title = document.createElement("h2");
+      title.innerHTML = `Semestre <span style="font-weight: bold;">${index + 1}</span>`;
+      semesterDiv.appendChild(title);
 
-  <div class="semestre" style="background-color: #5499c7">
-    <h2>Semestre 5️⃣</h2>
-    <!-- Materias -->
-  </div>
+      subjects.forEach(name => {
+        const subjectDiv = document.createElement("div");
+        subjectDiv.className = "subject";
 
-  <div class="semestre" style="background-color: #2980b9">
-    <h2>Semestre 6️⃣</h2>
-    <!-- Materias -->
-  </div>
+        const details = document.createElement("div");
+        details.className = "details";
+        details.innerHTML = `
+          <label>Nombre:</label>
+          <input type="text" value="${name}">
+          <label>Profesor:</label>
+          <input type="text" placeholder="Nombre del profesor">
+          <label>Notas (Corte 1, 2, 3):</label>
+          <input type="text" placeholder="Ej: 4.0, 4.2, 4.1">
+        `;
 
-  <div class="semestre" style="background-color: #2471a3">
-    <h2>Semestre 7️⃣</h2>
-    <!-- Materias -->
-  </div>
+        subjectDiv.appendChild(details);
+        semesterDiv.appendChild(subjectDiv);
+      });
 
-  <div class="semestre" style="background-color: #1f618d">
-    <h2>Semestre 8️⃣</h2>
-    <!-- Materias -->
-  </div>
-
-  <div class="semestre" style="background-color: #1a5276">
-    <h2>Semestre 9️⃣</h2>
-    <!-- Materias -->
-  </div>
+      grid.appendChild(semesterDiv);
+    });
+  </script>
 </body>
-
 </html>
