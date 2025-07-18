@@ -1,12 +1,10 @@
-<!-- Es la estructura de la pagina -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pensum Economía UMNG</title>
   <style>
-    /*Fuente y estilo general*/ 
     body {
       font-family: 'Times New Roman', serif;
       background-color: #f4f4f4;
@@ -36,11 +34,12 @@
     .materia {
       background: #fff;
       border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       margin: 10px 0;
       padding: 10px;
-      position: relative;
       cursor: pointer;
+      position: relative;
+      user-select: none;
     }
     .materia.bloqueada {
       opacity: 0.5;
@@ -53,35 +52,36 @@
     .requisitos {
       font-size: 0.9em;
       color: #555;
-    }
-    .formulario {
-      margin-top: 10px;
+      margin-top: 8px;
       display: none;
     }
-    .materia.activa .formulario {
+    .materia.activa .requisitos {
       display: block;
     }
-    .formulario input {
-      width: calc(100% - 10px);
-      margin-bottom: 5px;
-      padding: 5px;
-    }
-    .resumen {
-      margin-top: 40px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-    }
-    button {
+    .profesor-notas {
       margin-top: 10px;
-      padding: 5px 10px;
-      cursor: pointer;
+      padding-top: 8px;
+      border-top: 1px solid #ccc;
+      font-size: 0.9em;
+      user-select: auto;
+    }
+    .profesor-notas label {
+      display: block;
+      margin: 5px 0 2px;
+    }
+    .profesor-notas input[type="text"],
+    .profesor-notas input[type="number"] {
+      width: 100%;
+      padding: 5px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+    .promedio {
+      margin-top: 8px;
+      font-weight: bold;
+      color: #2e7d32;
     }
     .semestre-1 { background-color: #d6eaf8; }
     .semestre-2 { background-color: #aed6f1; }
@@ -92,6 +92,39 @@
     .semestre-7 { background-color: #2471a3; }
     .semestre-8 { background-color: #1f618d; }
     .semestre-9 { background-color: #1a5276; }
+    button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    /* Estilos para tabla resumen */
+    .resumen {
+      margin-top: 40px;
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .resumen h2 {
+      margin-top: 0;
+      color: #154360;
+      text-align: center;
+      font-family: Georgia, serif;
+      font-style: italic;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #aed6f1;
+    }
   </style>
 </head>
 <body>
@@ -99,33 +132,37 @@
   <h2><i>UMNG</i></h2>
   <div id="pensum" class="grid"></div>
   <button onclick="reiniciar()">Reiniciar progreso</button>
+
   <div class="resumen">
-    <h2>Resumen por semestre</h2>
+    <h2>Resumen de materias aprobadas por semestre</h2>
     <table id="tablaResumen">
       <thead>
         <tr>
           <th>Semestre</th>
           <th>Materia</th>
-          <th>Promedio</th>
           <th>Profesor</th>
+          <th>Nota Corte 1</th>
+          <th>Nota Corte 2</th>
+          <th>Nota Corte 3</th>
+          <th>Definitiva</th>
         </tr>
       </thead>
-      <tbody></tbody>
+      <tbody>
+        <!-- Se llena dinámicamente -->
+      </tbody>
     </table>
   </div>
 
   <script>
     const materiasPorSemestre = [
-    [
-        ["Economía I (Introducción a la Economía)", [], "semestre-1"],
+      ["Economía I (Introducción a la Economía)", [], "semestre-1"],
       ["Historia Económica General", [], "semestre-1"],
       ["Matemáticas I", [], "semestre-1"],
       ["Expresión Oral y Escrita", [], "semestre-1"],
       ["Metodología de la Investigación", [], "semestre-1"],
       ["Cátedra Neogranadina", [], "semestre-1"],
       ["Principios Constitucionales", [], "semestre-1"],
-    ];
-    [
+
       ["Microeconomía I", ["Economía I (Introducción a la Economía)"], "semestre-2"],
       ["Historia Económica Colombiana", ["Historia Económica General"], "semestre-2"],
       ["Matemáticas II", ["Matemáticas I"], "semestre-2"],
@@ -133,164 +170,193 @@
       ["Álgebra Lineal", [], "semestre-2"],
       ["Humanidades I", [], "semestre-2"],
       ["Extensión Cultural y Deportiva", [], "semestre-2"],
-    ];
-    [
+
       ["Microeconomía II", ["Microeconomía I"], "semestre-3"],
       ["Macroeconomía I", ["Microeconomía I"], "semestre-3"],
       ["Matemáticas III", ["Matemáticas II"], "semestre-3"],
       ["Estadística II", ["Estadística I"], "semestre-3"],
       ["Medición Económica", ["Microeconomía I"], "semestre-3"],
-    ];
-    [
+
       ["Microeconomía III", ["Microeconomía II"], "semestre-4"],
       ["Macroeconomía II", ["Macroeconomía I"], "semestre-4"],
       ["Economía Matemática", ["Matemáticas III"], "semestre-4"],
       ["Estadística III", ["Estadística I"], "semestre-4"],
       ["Contabilidad General", [], "semestre-4"],
-    ];
-    [
+
       ["Macroeconomía III", ["Microeconomía III", "Macroeconomía II", "Economía Matemática"], "semestre-5"],
       ["Doctrinas Económicas I", [], "semestre-5"],
       ["Econometría I", [], "semestre-5"],
       ["Énfasis I", [], "semestre-5"],
       ["Matemáticas Financieras", ["Estadística III"], "semestre-5"],
       ["Contabilidad de Costos", ["Contabilidad General"], "semestre-5"],
-    ];
-    [
+
       ["Crecimiento Económico", ["Macroeconomía III"], "semestre-6"],
       ["Doctrinas Económicas II", ["Doctrinas Económicas I"], "semestre-6"],
       ["Econometría II", ["Econometría I"], "semestre-6"],
       ["Énfasis II", [], "semestre-6"],
       ["Teoría de la Decisión", [], "semestre-6"],
       ["Análisis Financiero", ["Contabilidad de Costos"], "semestre-6"],
-    ];
-    [
+
       ["Teoría y Política Fiscal", ["Crecimiento Económico"], "semestre-7"],
       ["Desarrollo Económico", [], "semestre-7"],
       ["Teoría y Política Monetaria y Cambiaria", [], "semestre-7"],
       ["Énfasis III", [], "semestre-7"],
       ["Formulación y Evaluación de Proyectos", [], "semestre-7"],
       ["Humanidades II", [], "semestre-7"],
-    ];
-    [
+
       ["Electiva I en lo Público", [], "semestre-8"],
       ["Electiva I en lo Económico", [], "semestre-8"],
       ["Economía Internacional", [], "semestre-8"],
       ["Énfasis IV", [], "semestre-8"],
       ["Evaluación Económica y Social de Proyectos", [], "semestre-8"],
       ["Ética Profesional", [], "semestre-8"],
-    ];
-    [
+
       ["Electiva II en lo Público", [], "semestre-9"],
       ["Electiva II en lo Económico", [], "semestre-9"],
       ["Electiva en lo Internacional", [], "semestre-9"],
       ["Electiva de Énfasis", ["Estadística I"], "semestre-9"],
       ["Seminario de Grado", [], "semestre-9"]
     ];
-    ];
 
     let estado = JSON.parse(localStorage.getItem('estadoPensum')) || {};
-
-    function renderPensum() {
-      const contenedor = document.getElementById("pensum");
-      contenedor.innerHTML = "";
-      const contenedores = {};
-
-      for (let i = 1; i <= 9; i++) {
-        const div = document.createElement("div");
-        div.className = `semestre semestre-${i}`;
-        div.innerHTML = `<h3>Semestre ${i}</h3>`;
-        contenedores[`semestre-${i}`] = div;
-        contenedor.appendChild(div);
-      }
-
-      materiasPorSemestre.forEach(([nombre, requisitos, clase]) => {
-        const clave = nombre;
-        const aprobada = estado[clave]?.aprobada;
-        const requisitosOk = requisitos.every(req => estado[req]?.aprobada);
-        const materia = document.createElement("div");
-        materia.className = "materia";
-        if (!requisitosOk && !aprobada) materia.classList.add("bloqueada");
-        if (aprobada) materia.classList.add("aprobada");
-
-        materia.innerHTML = `
-          <strong>${nombre}</strong>
-          <div class="requisitos">Requiere: ${requisitos.length ? requisitos.join(", ") : "Ninguno"}</div>
-          <div class="formulario">
-            <input type="text" placeholder="Profesor" value="${estado[clave]?.profesor || ""}" />
-            <input type="number" placeholder="Nota corte 1" value="${estado[clave]?.n1 || ""}" />
-            <input type="number" placeholder="Nota corte 2" value="${estado[clave]?.n2 || ""}" />
-            <input type="number" placeholder="Nota corte 3" value="${estado[clave]?.n3 || ""}" />
-            <button>Guardar</button>
-            <div class="resultado"></div>
-          </div>
-        `;
-
-        const formulario = materia.querySelector(".formulario");
-
-        if (aprobada) {
-          formulario.querySelector(".resultado").innerHTML = `
-            <strong>Promedio:</strong> ${estado[clave].promedio}<br>
-            <strong>Profesor:</strong> ${estado[clave].profesor}
-          `;
-        }
-
-        materia.addEventListener("click", (e) => {
-          if (materia.classList.contains("bloqueada") || materia.classList.contains("aprobada")) return;
-          materia.classList.toggle("activa");
-        });
-
-        formulario.querySelector("button").onclick = (e) => {
-          e.stopPropagation();
-          const profesor = formulario.querySelector("input[type=text]").value;
-          const n1 = parseFloat(formulario.querySelectorAll("input")[1].value);
-          const n2 = parseFloat(formulario.querySelectorAll("input")[2].value);
-          const n3 = parseFloat(formulario.querySelectorAll("input")[3].value);
-
-          if (profesor && !isNaN(n1) && !isNaN(n2) && !isNaN(n3)) {
-            const promedio = (n1 * 0.3 + n2 * 0.3 + n3 * 0.4).toFixed(2);
-            estado[clave] = { profesor, n1, n2, n3, promedio, aprobada: true };
-            guardar();
-            renderPensum();
-          } else {
-            alert("Completa todos los campos correctamente");
-          }
-        };
-
-        contenedores[clase].appendChild(materia);
-      });
-
-      renderResumen();
-    }
-
-    function renderResumen() {
-      const tbody = document.querySelector("#tablaResumen tbody");
-      tbody.innerHTML = "";
-      materiasPorSemestre.forEach(([nombre, _, clase]) => {
-        const dato = estado[nombre];
-        if (dato?.aprobada) {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${clase.split("-")[1]}</td>
-            <td>${nombre}</td>
-            <td>${dato.promedio}</td>
-            <td>${dato.profesor}</td>
-          `;
-          tbody.appendChild(tr);
-        }
-      });
-    }
 
     function guardar() {
       localStorage.setItem('estadoPensum', JSON.stringify(estado));
     }
 
     function reiniciar() {
-      if (confirm("¿Deseas reiniciar todo el progreso?")) {
-        localStorage.removeItem('estadoPensum');
+      if(confirm("¿Deseas reiniciar todo el progreso?")) {
         estado = {};
+        guardar();
         renderPensum();
       }
+    }
+
+    function requisitosAprobados(requisitos) {
+      return requisitos.every(req => estado[req]?.aprobada === true);
+    }
+
+    function calcularDefinitiva(n1, n2, n3) {
+      return (n1*0.3 + n2*0.3 + n3*0.4).toFixed(2);
+    }
+
+    function aprobarMateria(nombre) {
+      if(estado[nombre]?.aprobada) {
+        delete estado[nombre];
+      } else {
+        estado[nombre] = {
+          aprobada: true,
+          profesor: estado[nombre]?.profesor || "",
+          n1: estado[nombre]?.n1 || "",
+          n2: estado[nombre]?.n2 || "",
+          n3: estado[nombre]?.n3 || "",
+          definitiva: estado[nombre]?.definitiva || ""
+        };
+      }
+      guardar();
+      renderPensum();
+    }
+
+    function renderResumen() {
+      const tbody = document.querySelector('#tablaResumen tbody');
+      tbody.innerHTML = "";
+
+      materiasPorSemestre.forEach(([nombre, _, clase]) => {
+        const datos = estado[nombre];
+        if(datos?.aprobada) {
+          const semestreNum = clase.split('-')[1];
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${semestreNum}</td>
+            <td>${nombre}</td>
+            <td>${datos.profesor || ''}</td>
+            <td>${datos.n1 !== undefined ? datos.n1 : ''}</td>
+            <td>${datos.n2 !== undefined ? datos.n2 : ''}</td>
+            <td>${datos.n3 !== undefined ? datos.n3 : ''}</td>
+            <td>${datos.definitiva || ''}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+    }
+
+    function renderPensum() {
+      const contenedor = document.getElementById('pensum');
+      contenedor.innerHTML = '';
+
+      const semestresDivs = {};
+      for(let i=1; i<=9; i++) {
+        const div = document.createElement('div');
+        div.className = `semestre semestre-${i}`;
+        div.innerHTML = `<h3>Semestre ${i}</h3>`;
+        contenedor.appendChild(div);
+        semestresDivs[`semestre-${i}`] = div;
+      }
+
+      materiasPorSemestre.forEach(([nombre, requisitos, clase]) => {
+        const materiaDiv = document.createElement('div');
+        materiaDiv.className = 'materia';
+
+        const estaAprobada = estado[nombre]?.aprobada;
+        const requisitosOk = requisitosAprobados(requisitos);
+
+        if(!estaAprobada && !requisitosOk) {
+          materiaDiv.classList.add('bloqueada');
+        }
+        if(estaAprobada) {
+          materiaDiv.classList.add('aprobada');
+        }
+
+        materiaDiv.innerHTML = `<strong>${nombre}</strong>
+          <div class="requisitos">Requiere: ${requisitos.length ? requisitos.join(", ") : "Ninguno"}</div>
+        `;
+
+        materiaDiv.addEventListener('click', () => {
+          if(materiaDiv.classList.contains('bloqueada')) return;
+          aprobarMateria(nombre);
+        });
+
+        if(estaAprobada) {
+          const datos = estado[nombre];
+          const formDiv = document.createElement('div');
+          formDiv.className = 'profesor-notas';
+
+          formDiv.innerHTML = `
+            <label>Profesor:</label>
+            <input type="text" value="${datos.profesor || ''}" placeholder="Nombre profesor" />
+            <label>Nota corte 1 (30%):</label>
+            <input type="number" min="0" max="5" step="0.01" value="${datos.n1 || ''}" />
+            <label>Nota corte 2 (30%):</label>
+            <input type="number" min="0" max="5" step="0.01" value="${datos.n2 || ''}" />
+            <label>Nota corte 3 (40%):</label>
+            <input type="number" min="0" max="5" step="0.01" value="${datos.n3 || ''}" />
+            <div class="promedio">Definitiva: ${datos.definitiva || '0.00'}</div>
+          `;
+
+          const inputs = formDiv.querySelectorAll('input');
+          inputs.forEach(input => {
+            input.addEventListener('input', () => {
+              const prof = formDiv.querySelector('input[type="text"]').value.trim();
+              const n1 = parseFloat(formDiv.querySelectorAll('input')[1].value);
+              const n2 = parseFloat(formDiv.querySelectorAll('input')[2].value);
+              const n3 = parseFloat(formDiv.querySelectorAll('input')[3].value);
+
+              if(prof && !isNaN(n1) && !isNaN(n2) && !isNaN(n3)) {
+                const definitiva = calcularDefinitiva(n1, n2, n3);
+                formDiv.querySelector('.promedio').textContent = `Definitiva: ${definitiva}`;
+                estado[nombre] = { aprobada: true, profesor: prof, n1, n2, n3, definitiva };
+                guardar();
+                renderResumen();
+              }
+            });
+          });
+
+          materiaDiv.appendChild(formDiv);
+        }
+
+      });
+
+      renderResumen();
     }
 
     renderPensum();
