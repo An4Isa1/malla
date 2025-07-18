@@ -1,117 +1,119 @@
-<!DOCTYPE html>
-<html lang="es">
+import { useState } from "react";
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pensum Interactivo de Economía</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
+const materiasPorSemestre = [
+  // Semestre 1
+  [
+    { nombre: "Fundamentos de Economía", requisitos: [] },
+    { nombre: "Fundamentos de Administración", requisitos: [] },
+    { nombre: "Matemáticas I", requisitos: [] },
+    { nombre: "Fundamentos de Contabilidad", requisitos: [] },
+    { nombre: "Cátedra Rafael Núñez", requisitos: [] }
+  ],
+  // Semestre 2
+  [
+    { nombre: "Microeconomía I", requisitos: ["Fundamentos de Economía"] },
+    { nombre: "Macroeconomía I", requisitos: ["Fundamentos de Economía"] },
+    { nombre: "Matemáticas II", requisitos: ["Matemáticas I"] },
+    { nombre: "Contabilidad Financiera", requisitos: ["Fundamentos de Contabilidad"] },
+    { nombre: "Estadística I", requisitos: ["Matemáticas I"] }
+  ],
+  // Semestre 3
+  [
+    { nombre: "Microeconomía II", requisitos: ["Microeconomía I"] },
+    { nombre: "Macroeconomía II", requisitos: ["Macroeconomía I"] },
+    { nombre: "Matemáticas III", requisitos: ["Matemáticas II"] },
+    { nombre: "Estadística II", requisitos: ["Estadística I"] },
+    { nombre: "Historia Económica General", requisitos: [] }
+  ],
+  // Semestre 4
+  [
+    { nombre: "Econometría I", requisitos: ["Estadística II"] },
+    { nombre: "Historia Económica de Colombia", requisitos: ["Historia Económica General"] },
+    { nombre: "Teoría Monetaria y Financiera", requisitos: ["Macroeconomía II"] },
+    { nombre: "Epistemología", requisitos: [] },
+    { nombre: "Electiva I", requisitos: [] }
+  ],
+  // Semestre 5
+  [
+    { nombre: "Econometría II", requisitos: ["Econometría I"] },
+    { nombre: "Economía del Sector Público", requisitos: ["Microeconomía II"] },
+    { nombre: "Organización Industrial", requisitos: ["Microeconomía II"] },
+    { nombre: "Electiva II", requisitos: [] },
+    { nombre: "Investigación I", requisitos: [] }
+  ],
+  // Semestre 6
+  [
+    { nombre: "Economía Internacional", requisitos: ["Macroeconomía II"] },
+    { nombre: "Evaluación de Proyectos", requisitos: ["Econometría II"] },
+    { nombre: "Investigación II", requisitos: ["Investigación I"] },
+    { nombre: "Electiva III", requisitos: [] },
+    { nombre: "Electiva IV", requisitos: [] }
+  ],
+  // Semestre 7
+  [
+    { nombre: "Creación de Empresas", requisitos: ["Evaluación de Proyectos"] },
+    { nombre: "Seminario de Economía Colombiana", requisitos: ["Historia Económica de Colombia"] },
+    { nombre: "Electiva V", requisitos: [] },
+    { nombre: "Electiva VI", requisitos: [] },
+    { nombre: "Opción de Grado I", requisitos: ["Investigación II"] }
+  ],
+  // Semestre 8
+  [
+    { nombre: "Seminario de Economía Internacional", requisitos: ["Economía Internacional"] },
+    { nombre: "Electiva VII", requisitos: [] },
+    { nombre: "Electiva VIII", requisitos: [] },
+    { nombre: "Ética Profesional", requisitos: [] },
+    { nombre: "Opción de Grado II", requisitos: ["Opción de Grado I"] }
+  ],
+  // Semestre 9
+  [
+    { nombre: "Práctica Empresarial o Social", requisitos: ["Opción de Grado II"] }
+  ]
+];
 
-    h1 {
-      text-align: center;
-      color: #1a5276;
-    }
+export default function PensumInteractivo() {
+  const [materiasAprobadas, setMateriasAprobadas] = useState([]);
 
-    .semestre {
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
+  const toggleMateria = (nombre) => {
+    setMateriasAprobadas((prev) =>
+      prev.includes(nombre)
+        ? prev.filter((m) => m !== nombre)
+        : [...prev, nombre]
+    );
+  };
 
-    .materia {
-      display: flex;
-      flex-direction: column;
-      background-color: white;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 5px;
-      margin-bottom: 10px;
-    }
+  const estaDesbloqueada = (materia) =>
+    materia.requisitos.every((req) => materiasAprobadas.includes(req));
 
-    .materia input,
-    .materia select {
-      margin: 5px 0;
-    }
-
-    .materia label {
-      font-weight: bold;
-    }
-
-    .completada {
-      background-color: #d4efdf;
-    }
-  </style>
-</head>
-
-<body>
-  <h1>Pensum Interactivo de Economía</h1>
-
-  <div class="semestre" style="background-color: #d6eaf8">
-    <h2>Semestre 1️⃣</h2>
-    <div class="materia">
-      <label>Nombre:</label>
-      <input type="text" value="Historia económica general" />
-      <label>Profesor:</label>
-      <input type="text" value="" />
-      <label>Notas (Corte 1, 2, 3):</label>
-      <input type="text" value="" />
+  return (
+    <div className="p-6 space-y-6">
+      <h1 className="text-2xl font-bold">Pensum Interactivo</h1>
+      {materiasPorSemestre.map((semestre, i) => (
+        <div key={i} className="border rounded-xl p-4 shadow">
+          <h2 className="text-xl font-semibold mb-2">Semestre {i + 1}</h2>
+          <ul className="space-y-2">
+            {semestre.map((materia) => {
+              const desbloqueada = estaDesbloqueada(materia);
+              const aprobada = materiasAprobadas.includes(materia.nombre);
+              return (
+                <li
+                  key={materia.nombre}
+                  onClick={() => desbloqueada && toggleMateria(materia.nombre)}
+                  className={`cursor-pointer transition p-2 rounded-md ${
+                    desbloqueada
+                      ? aprobada
+                        ? "line-through bg-green-100"
+                        : "hover:bg-blue-100 bg-white"
+                      : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  }`}
+                >
+                  {materia.nombre}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
     </div>
-    <!-- Agrega más materias aquí si es necesario -->
-  </div>
-
-  <div class="semestre" style="background-color: #aed6f1">
-    <h2>Semestre 2️⃣</h2>
-    <div class="materia">
-      <label>Nombre:</label>
-      <input type="text" value="" />
-      <label>Profesor:</label>
-      <input type="text" value="" />
-      <label>Notas (Corte 1, 2, 3):</label>
-      <input type="text" value="" />
-    </div>
-  </div>
-
-  <div class="semestre" style="background-color: #85c1e9">
-    <h2>Semestre 3️⃣</h2>
-    <!-- Materias -->
-  </div>
-
-  <div class="semestre" style="background-color: #7fb3d5">
-    <h2>Semestre 4️⃣</h2>
-    <!-- Materias -->
-  </div>
-
-  <div class="semestre" style="background-color: #5499c7">
-    <h2>Semestre 5️⃣</h2>
-    <!-- Materias -->
-  </div>
-
-  <div class="semestre" style="background-color: #2980b9">
-    <h2>Semestre 6️⃣</h2>
-    <!-- Materias -->
-  </div>
-
-  <div class="semestre" style="background-color: #2471a3">
-    <h2>Semestre 7️⃣</h2>
-    <!-- Materias -->
-  </div>
-
-  <div class="semestre" style="background-color: #1f618d">
-    <h2>Semestre 8️⃣</h2>
-    <!-- Materias -->
-  </div>
-
-  <div class="semestre" style="background-color: #1a5276">
-    <h2>Semestre 9️⃣</h2>
-    <!-- Materias -->
-  </div>
-</body>
-
-</html>
->
+  );
+}
