@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Curricular - Economía</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .semester {
+      display: inline-block;
+      vertical-align: top;
+      width: 250px;
+      margin: 10px;
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .semester h2 {
+      text-align: center;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+    .subject {
+      background: #e6eef3;
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 8px;
+      position: relative;
+      cursor: pointer;
+    }
+    .subject.locked {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .subject .info {
+      font-size: 0.8em;
+      margin-top: 4px;
+    }
+    .subject.completed {
+      background-color: #b3e6c3;
+      text-decoration: line-through;
+    }
+    .subject:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 105%;
+      top: 0;
+      white-space: pre-wrap;
+      background-color: #333;
+      color: #fff;
+      padding: 6px;
+      border-radius: 4px;
+      font-size: 0.75em;
+      display: block;
+      width: 180px;
+      z-index: 10;
+    }
+    .details {
+      display: none;
+      font-size: 0.8em;
+      margin-top: 6px;
+    }
+    .subject.completed .details {
+      display: block;
+    }
+    .details input {
+      width: 100%;
+      margin-bottom: 4px;
+      padding: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Curricular - Economía</h1>
+  <div id="grid"></div>
+
+  <script>
+    const subjects = [
+      { sem: 1, name: "Economía I", id: "eco1" },
+      { sem: 1, name: "Historia Económica General", id: "heg" },
+      { sem: 1, name: "Matemáticas I", id: "mat1" },
+      { sem: 1, name: "Expresión Oral y Escrita", id: "exp" },
+      { sem: 1, name: "Metodología de la Investigación", id: "met" },
+      { sem: 1, name: "Cátedra Neogranadina", id: "cat" },
+      { sem: 1, name: "Principios Constitucionales", id: "pc" },
+      { sem: 2, name: "Microeconomía I", id: "mic1", req: ["eco1"] },
+      { sem: 2, name: "Historia Económica Colombiana", id: "hec", req: ["heg"] },
+      { sem: 2, name: "Matemáticas II", id: "mat2", req: ["mat1"] },
+      { sem: 2, name: "Estadística I", id: "est1" },
+      { sem: 2, name: "Álgebra Lineal", id: "al" },
+      { sem: 2, name: "Humanidades I", id: "hum1" },
+      { sem: 2, name: "Extensión Cultural y Deportiva", id: "ext" },
+      { sem: 3, name: "Microeconomía II", id: "mic2", req: ["mic1"] },
+      { sem: 3, name: "Macroeconomía I", id: "mac1", req: ["mic1"] },
+      { sem: 3, name: "Matemáticas III", id: "mat3", req: ["mat2"] },
+      { sem: 3, name: "Estadística II", id: "est2", req: ["est1"] },
+      { sem: 3, name: "Medición Económica", id: "med", req: ["mic1"] },
+      { sem: 4, name: "Microeconomía III", id: "mic3", req: ["mic2"] },
+      { sem: 4, name: "Macroeconomía II", id: "mac2", req: ["mac1"] },
+      { sem: 4, name: "Economía Matemática", id: "emat", req: ["mat3"] },
+      { sem: 4, name: "Estadística III", id: "est3", req: ["est1"] },
+      { sem: 4, name: "Contabilidad General", id: "cont" },
+      { sem: 5, name: "Macroeconomía III", id: "mac3", req: ["mic3", "mac2", "emat"] },
+      { sem: 5, name: "Doctrinas Económicas I", id: "de1" },
+      { sem: 5, name: "Econometría I", id: "eco1e" },
+      { sem: 5, name: "Énfasis I", id: "enf1" },
+      { sem: 5, name: "Matemáticas Financieras", id: "mf", req: ["est3"] },
+      { sem: 5, name: "Contabilidad de Costos", id: "cost", req: ["cont"] },
+      { sem: 6, name: "Crecimiento Económico", id: "crec", req: ["mac3"] },
+      { sem: 6, name: "Doctrinas Económicas II", id: "de2", req: ["de1"] },
+      { sem: 6, name: "Econometría II", id: "eco2e" },
+      { sem: 6, name: "Énfasis II", id: "enf2" },
+      { sem: 6, name: "Teoría de la Decisión", id: "td" },
+      { sem: 6, name: "Análisis Financiero", id: "af", req: ["cost"] },
+      { sem: 7, name: "Teoría y Política Fiscal", id: "fiscal", req: ["crec"] },
+      { sem: 7, name: "Desarrollo Económico", id: "des" },
+      { sem: 7, name: "Teoría y Política Monetaria y Cambiaria", id: "mon" },
+      { sem: 7, name: "Énfasis III", id: "enf3" },
+      { sem: 7, name: "Formulación y Evaluación de Proyectos", id: "form" },
+      { sem: 7, name: "Humanidades II", id: "hum2" },
+      { sem: 8, name: "Electiva I en lo Público", id: "ep1" },
+      { sem: 8, name: "Electiva I en lo Económico", id: "ee1" },
+      { sem: 8, name: "Economía Internacional", id: "ei" },
+      { sem: 8, name: "Énfasis IV", id: "enf4" },
+      { sem: 8, name: "Evaluación Económica y Social de Proyectos", id: "eval" },
+      { sem: 8, name: "Ética Profesional", id: "etica" },
+      { sem: 9, name: "Electiva II en lo Público", id: "ep2" },
+      { sem: 9, name: "Electiva II en lo Económico", id: "ee2" },
+      { sem: 9, name: "Electiva en lo Internacional", id: "ei2" },
+      { sem: 9, name: "Electiva de Énfasis", id: "ee", req: ["est1"] },
+      { sem: 9, name: "Seminario de Grado", id: "sem" }
+    ];
+
+    const saved = JSON.parse(localStorage.getItem("malla")) || {};
+
+    const container = document.getElementById("grid");
+
+    for (let s = 1; s <= 9; s++) {
+      const col = document.createElement("div");
+      col.className = "semester";
+      col.innerHTML = `<h2>Semestre ${s}</h2>`;
+      subjects.filter(m => m.sem === s).forEach(m => {
+        const div = document.createElement("div");
+        div.className = "subject";
+        div.id = m.id;
+        div.textContent = m.name;
+
+        const details = document.createElement("div");
+        details.className = "details";
+        details.innerHTML = `
+          <label>Profesor: <input type="text" data-key="prof"></label>
+          <label>Corte 1: <input type="number" data-key="c1"></label>
+          <label>Corte 2: <input type="number" data-key="c2"></label>
+          <label>Corte 3: <input type="number" data-key="c3"></label>
+          <label>Definitiva: <input type="number" data-key="def"></label>
+        `;
+        div.appendChild(details);
+
+        if (saved[m.id]) {
+          div.classList.add("completed");
+          for (const inp of details.querySelectorAll("input")) {
+            inp.value = saved[m.id][inp.dataset.key] || "";
+          }
+        }
+
+        div.addEventListener("click", (e) => {
+          if (div.classList.contains("locked")) return;
+          div.classList.toggle("completed");
+          if (div.classList.contains("completed")) {
+            saved[m.id] = {};
+            for (const inp of details.querySelectorAll("input")) {
+              saved[m.id][inp.dataset.key] = inp.value;
+              inp.addEventListener("input", () => {
+                saved[m.id][inp.dataset.key] = inp.value;
+                localStorage.setItem("malla", JSON.stringify(saved));
+              });
+            }
+          } else {
+            delete saved[m.id];
+          }
+          localStorage.setItem("malla", JSON.stringify(saved));
+          renderLocks();
+        });
+
+        col.appendChild(div);
+      });
+      container.appendChild(col);
+    }
+
+    function renderLocks() {
+      subjects.forEach(m => {
+        const el = document.getElementById(m.id);
+        const req = m.req || [];
+        const locked = !req.every(r => saved[r]);
+        el.classList.toggle("locked", locked);
+        if (locked && req.length) {
+          el.setAttribute("data-tooltip", "Requiere:\n" + req.map(r => subjects.find(s => s.id === r).name).join("\n"));
+        } else {
+          el.removeAttribute("data-tooltip");
+        }
+      });
+    }
+
+    renderLocks();
+  </script>
+</body>
+</html>
