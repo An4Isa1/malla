@@ -1,119 +1,92 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Pensum Economía</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f6f8;
-      color: #333;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 5px;
-      font-style: italic;
-      font-size: 2.5em;
-    }
-    h2.subtitulo {
-      text-align: center;
-      margin-top: 0;
-      margin-bottom: 30px;
-      font-style: italic;
-      font-size: 1.5em;
-    }
-    .semester {
-      display: inline-block;
-      vertical-align: top;
-      width: 250px;
-      margin: 10px;
-      border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .semester h2 {
-      text-align: center;
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-    .subject {
-      font-family: 'Times New Roman', serif;
-      background: #e6eef3;
-      padding: 10px;
-      margin: 6px 0;
-      border-radius: 8px;
-      position: relative;
-    }
-    .details {
-      font-family: 'Times New Roman', serif;
-      font-size: 0.85em;
-      margin-top: 6px;
-    }
-    .details label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 2px;
-    }
-    .details input {
-      width: 100%;
-      margin-bottom: 6px;
-      padding: 4px;
-      font-family: 'Times New Roman', serif;
-    }
-  </style>
-</head>
-<body>
-  <h1>Pensum Economía</h1>
-  <h2 class="subtitulo">UMNG</h2>
-  <div id="grid"></div>
-  <script>
-    const semesterColors = [
-      "#d6eaf8", "#aed6f1", "#85c1e9", "#7fb3d5",
-      "#5499c7", "#2980b9", "#2471a3", "#1f618d", "#1a5276"
-    ];
+import React, { useState } from "react";
 
-    const semesters = [
-      ["Historia económica general", "Matemáticas I", "Expresión Oral y Escrita", "Metodología de la Investigación", "Cátedra Neogranadina", "Economía I"],
-      ["Microeconomía I", "Historia Económica Colombiana", "Matemáticas II", "Estadística I", "Álgebra Lineal", "Humanidades I", "Extensión Cultural y Deportiva"],
-      ["Microeconomía II", "Macroeconomía I", "Matemáticas III", "Estadística II", "Medición Económica"],
-      ["Microeconomía III", "Macroeconomía II", "Economía Matemática", "Estadística III", "Contabilidad General"],
-      ["Macroeconomía III", "Doctrinas Económicas I", "Econometría I", "Énfasis I", "Matemáticas Financieras", "Contabilidad de Costos"]
-    ];
+const semesters = [
+  { id: 1, name: "Semestre 1️⃣", color: "#d6eaf8", subjects: ["Historia Económica General", "Principios Constitucionales", "Metodología de la Investigación", "Matemáticas I", "Lectoescritura"] },
+  { id: 2, name: "Semestre 2️⃣", color: "#aed6f1", subjects: ["Microeconomía I", "Matemáticas II", "Historia Económica de Colombia", "Contabilidad", "Introducción a la Economía"] },
+  { id: 3, name: "Semestre 3️⃣", color: "#85c1e9", subjects: ["Macroeconomía I", "Estadística I", "Microeconomía II", "Desarrollo Económico", "Contabilidad II"] },
+  { id: 4, name: "Semestre 4️⃣", color: "#7fb3d5", subjects: ["Macroeconomía II", "Estadística II", "Economía Colombiana", "Econometría I", "Epistemología"] },
+  { id: 5, name: "Semestre 5️⃣", color: "#5499c7", subjects: ["Macroeconomía III", "Econometría II", "Historia del Pensamiento Económico", "Electiva I", "Economía Internacional"] },
+  { id: 6, name: "Semestre 6️⃣", color: "#2980b9", subjects: ["Evaluación de Proyectos", "Electiva II", "Formulación y Evaluación de Proyectos", "Modelación Económica", "Economía del Sector Público"] },
+  { id: 7, name: "Semestre 7️⃣", color: "#2471a3", subjects: ["Electiva III", "Seminario de Investigación I", "Taller de Coyuntura", "Finanzas Públicas", "Taller de Economía Regional"] },
+  { id: 8, name: "Semestre 8️⃣", color: "#1f618d", subjects: ["Práctica Profesional", "Trabajo de Grado I", "Electiva IV", "Seminario de Economía Sectorial", "Electiva Complementaria"] },
+  { id: 9, name: "Semestre 9️⃣", color: "#1a5276", subjects: ["Trabajo de Grado II", "Electiva V"] },
+];
 
-    const grid = document.getElementById("grid");
+export default function PensumInteractivo() {
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [subjectInfo, setSubjectInfo] = useState({});
 
-    semesters.forEach((subjects, index) => {
-      const semesterDiv = document.createElement("div");
-      semesterDiv.className = "semester";
-      semesterDiv.style.backgroundColor = semesterColors[index];
+  const handleSubjectClick = (semesterId, subject) => {
+    setSelectedSubject({ semesterId, subject });
+  };
 
-      const title = document.createElement("h2");
-      title.innerHTML = `Semestre <span style="font-weight: bold;">${index + 1}</span>`;
-      semesterDiv.appendChild(title);
-
-      subjects.forEach(name => {
-        const subjectDiv = document.createElement("div");
-        subjectDiv.className = "subject";
-
-        const details = document.createElement("div");
-        details.className = "details";
-        details.innerHTML = `
-          <label>Nombre:</label>
-          <input type="text" value="${name}">
-          <label>Profesor:</label>
-          <input type="text" placeholder="Nombre del profesor">
-          <label>Notas (Corte 1, 2, 3):</label>
-          <input type="text" placeholder="Ej: 4.0, 4.2, 4.1">
-        `;
-
-        subjectDiv.appendChild(details);
-        semesterDiv.appendChild(subjectDiv);
-      });
-
-      grid.appendChild(semesterDiv);
+  const handleChange = (field, value) => {
+    const key = `${selectedSubject.semesterId}-${selectedSubject.subject}`;
+    setSubjectInfo({
+      ...subjectInfo,
+      [key]: {
+        ...subjectInfo[key],
+        [field]: value,
+      },
     });
-  </script>
-</body>
-</html>
+  };
+
+  const isComplete = (semesterId, subject) => {
+    const key = `${semesterId}-${subject}`;
+    const info = subjectInfo[key];
+    return info?.profesor && info?.nota1 && info?.nota2 && info?.nota3;
+  };
+
+  return (
+    <div className="p-6 space-y-6">
+      <h1 className="text-3xl italic text-center">Pénsum Interactivo</h1>
+      <p className="italic text-center">Haz clic en una materia para ingresar profesor y notas</p>
+
+      {semesters.map((sem) => (
+        <div key={sem.id} className="rounded-2xl p-4 shadow" style={{ backgroundColor: sem.color }}>
+          <h2 className="text-xl font-semibold mb-2 italic">{sem.name}</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {sem.subjects.map((subj) => {
+              const complete = isComplete(sem.id, subj);
+              return (
+                <button
+                  key={subj}
+                  onClick={() => handleSubjectClick(sem.id, subj)}
+                  className={`p-2 rounded-xl text-left font-[Times New Roman] bg-white/60 hover:bg-white transition border border-gray-300 ${complete ? "line-through" : ""}`}
+                >
+                  {subj}
+                </button>
+              );
+            })}
+          </div>
+
+          {selectedSubject?.semesterId === sem.id && (
+            <div className="mt-4 bg-white p-4 rounded-xl border">
+              <h3 className="font-bold italic mb-2">Editar información de la materia</h3>
+              <input
+                type="text"
+                placeholder="Nombre del profesor"
+                className="w-full mb-2 p-2 rounded border font-[Times New Roman]"
+                value={subjectInfo[`${sem.id}-${selectedSubject.subject}`]?.profesor || ""}
+                onChange={(e) => handleChange("profesor", e.target.value)}
+              />
+              <div className="grid grid-cols-3 gap-2">
+                {[1, 2, 3].map((n) => (
+                  <input
+                    key={n}
+                    type="number"
+                    step="0.01"
+                    placeholder={`Nota ${n}`}
+                    className="p-2 rounded border font-[Times New Roman]"
+                    value={subjectInfo[`${sem.id}-${selectedSubject.subject}`]?.[`nota${n}`] || ""}
+                    onChange={(e) => handleChange(`nota${n}`, e.target.value)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
