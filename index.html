@@ -155,6 +155,7 @@
 
   <script>
     const materiasPorSemestre = [
+      [
       ["Economía I (Introducción a la Economía)", [], "semestre-1"],
       ["Historia Económica General", [], "semestre-1"],
       ["Matemáticas I", [], "semestre-1"],
@@ -162,7 +163,8 @@
       ["Metodología de la Investigación", [], "semestre-1"],
       ["Cátedra Neogranadina", [], "semestre-1"],
       ["Principios Constitucionales", [], "semestre-1"],
-
+      ];
+      [
       ["Microeconomía I", ["Economía I (Introducción a la Economía)"], "semestre-2"],
       ["Historia Económica Colombiana", ["Historia Económica General"], "semestre-2"],
       ["Matemáticas II", ["Matemáticas I"], "semestre-2"],
@@ -170,52 +172,60 @@
       ["Álgebra Lineal", [], "semestre-2"],
       ["Humanidades I", [], "semestre-2"],
       ["Extensión Cultural y Deportiva", [], "semestre-2"],
-
+      ];
+      [
       ["Microeconomía II", ["Microeconomía I"], "semestre-3"],
       ["Macroeconomía I", ["Microeconomía I"], "semestre-3"],
       ["Matemáticas III", ["Matemáticas II"], "semestre-3"],
       ["Estadística II", ["Estadística I"], "semestre-3"],
       ["Medición Económica", ["Microeconomía I"], "semestre-3"],
-
+      ];
+      [
       ["Microeconomía III", ["Microeconomía II"], "semestre-4"],
       ["Macroeconomía II", ["Macroeconomía I"], "semestre-4"],
       ["Economía Matemática", ["Matemáticas III"], "semestre-4"],
       ["Estadística III", ["Estadística I"], "semestre-4"],
       ["Contabilidad General", [], "semestre-4"],
-
+      ];
+      [
       ["Macroeconomía III", ["Microeconomía III", "Macroeconomía II", "Economía Matemática"], "semestre-5"],
       ["Doctrinas Económicas I", [], "semestre-5"],
       ["Econometría I", [], "semestre-5"],
       ["Énfasis I", [], "semestre-5"],
       ["Matemáticas Financieras", ["Estadística III"], "semestre-5"],
       ["Contabilidad de Costos", ["Contabilidad General"], "semestre-5"],
-
+      ];
+      [
       ["Crecimiento Económico", ["Macroeconomía III"], "semestre-6"],
       ["Doctrinas Económicas II", ["Doctrinas Económicas I"], "semestre-6"],
       ["Econometría II", ["Econometría I"], "semestre-6"],
       ["Énfasis II", [], "semestre-6"],
       ["Teoría de la Decisión", [], "semestre-6"],
       ["Análisis Financiero", ["Contabilidad de Costos"], "semestre-6"],
-
+      ];
+      [
       ["Teoría y Política Fiscal", ["Crecimiento Económico"], "semestre-7"],
       ["Desarrollo Económico", [], "semestre-7"],
       ["Teoría y Política Monetaria y Cambiaria", [], "semestre-7"],
       ["Énfasis III", [], "semestre-7"],
       ["Formulación y Evaluación de Proyectos", [], "semestre-7"],
       ["Humanidades II", [], "semestre-7"],
-
+      ];
+      [
       ["Electiva I en lo Público", [], "semestre-8"],
       ["Electiva I en lo Económico", [], "semestre-8"],
       ["Economía Internacional", [], "semestre-8"],
       ["Énfasis IV", [], "semestre-8"],
       ["Evaluación Económica y Social de Proyectos", [], "semestre-8"],
       ["Ética Profesional", [], "semestre-8"],
-
+      ];
+      [
       ["Electiva II en lo Público", [], "semestre-9"],
       ["Electiva II en lo Económico", [], "semestre-9"],
       ["Electiva en lo Internacional", [], "semestre-9"],
       ["Electiva de Énfasis", ["Estadística I"], "semestre-9"],
       ["Seminario de Grado", [], "semestre-9"]
+      ];
     ];
 
     let estado = JSON.parse(localStorage.getItem('estadoPensum')) || {};
