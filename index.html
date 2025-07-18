@@ -1,92 +1,208 @@
-import React, { useState } from "react";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pensum Economía</title>
+  <style>
+    body {
+      font-family: 'Times New Roman', serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    h1, h2 {
+      font-family: Georgia, serif;
+      font-style: italic;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-top: 20px;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+    .semestre {
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .semestre h3 {
+      font-weight: bold;
+      text-align: center;
+    }
+    .materia {
+      background-color: rgba(255, 255, 255, 0.8);
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+    }
+    .materia.bloqueada {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .info-extra {
+      display: none;
+      margin-top: 10px;
+    }
+    .materia.aprobada {
+      text-decoration: line-through;
+      background-color: #b2fab4;
+    }
+    .semestre-1 { background-color: #d6eaf8; }
+    .semestre-2 { background-color: #aed6f1; }
+    .semestre-3 { background-color: #85c1e9; }
+    .semestre-4 { background-color: #7fb3d5; }
+    .semestre-5 { background-color: #5499c7; }
+    .semestre-6 { background-color: #2980b9; }
+    .semestre-7 { background-color: #2471a3; }
+    .semestre-8 { background-color: #1f618d; }
+    .semestre-9 { background-color: #1a5276; }
 
-const semesters = [
-  { id: 1, name: "Semestre 1️⃣", color: "#d6eaf8", subjects: ["Historia Económica General", "Principios Constitucionales", "Metodología de la Investigación", "Matemáticas I", "Lectoescritura"] },
-  { id: 2, name: "Semestre 2️⃣", color: "#aed6f1", subjects: ["Microeconomía I", "Matemáticas II", "Historia Económica de Colombia", "Contabilidad", "Introducción a la Economía"] },
-  { id: 3, name: "Semestre 3️⃣", color: "#85c1e9", subjects: ["Macroeconomía I", "Estadística I", "Microeconomía II", "Desarrollo Económico", "Contabilidad II"] },
-  { id: 4, name: "Semestre 4️⃣", color: "#7fb3d5", subjects: ["Macroeconomía II", "Estadística II", "Economía Colombiana", "Econometría I", "Epistemología"] },
-  { id: 5, name: "Semestre 5️⃣", color: "#5499c7", subjects: ["Macroeconomía III", "Econometría II", "Historia del Pensamiento Económico", "Electiva I", "Economía Internacional"] },
-  { id: 6, name: "Semestre 6️⃣", color: "#2980b9", subjects: ["Evaluación de Proyectos", "Electiva II", "Formulación y Evaluación de Proyectos", "Modelación Económica", "Economía del Sector Público"] },
-  { id: 7, name: "Semestre 7️⃣", color: "#2471a3", subjects: ["Electiva III", "Seminario de Investigación I", "Taller de Coyuntura", "Finanzas Públicas", "Taller de Economía Regional"] },
-  { id: 8, name: "Semestre 8️⃣", color: "#1f618d", subjects: ["Práctica Profesional", "Trabajo de Grado I", "Electiva IV", "Seminario de Economía Sectorial", "Electiva Complementaria"] },
-  { id: 9, name: "Semestre 9️⃣", color: "#1a5276", subjects: ["Trabajo de Grado II", "Electiva V"] },
-];
+    input[type="text"], input[type="number"] {
+      font-family: 'Times New Roman', serif;
+      margin-top: 5px;
+      display: block;
+      width: 100%;
+      padding: 5px;
+    }
 
-export default function PensumInteractivo() {
-  const [selectedSubject, setSelectedSubject] = useState(null);
-  const [subjectInfo, setSubjectInfo] = useState({});
+    button {
+      margin-top: 8px;
+      padding: 5px;
+      font-family: 'Times New Roman', serif;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pensum Economía</h1>
+  <h2>UMNG</h2>
+  <div class="grid-container" id="contenedor-semestres"></div>
 
-  const handleSubjectClick = (semesterId, subject) => {
-    setSelectedSubject({ semesterId, subject });
-  };
+  <script>
+    const materias = [
+      { nombre: "Economía I", semestre: 1, requisitos: [] },
+      { nombre: "Matemáticas I", semestre: 1, requisitos: [] },
+      { nombre: "Historia Económica General", semestre: 1, requisitos: [] },
+      { nombre: "Contabilidad I", semestre: 1, requisitos: [] },
+      { nombre: "Microeconomía I", semestre: 2, requisitos: ["Economía I"] },
+      { nombre: "Matemáticas II", semestre: 2, requisitos: ["Matemáticas I"] },
+      { nombre: "Contabilidad II", semestre: 2, requisitos: ["Contabilidad I"] },
+      { nombre: "Estadística I", semestre: 2, requisitos: ["Matemáticas I"] },
+      { nombre: "Econometría I", semestre: 3, requisitos: ["Estadística I", "Matemáticas II"] },
+      { nombre: "Macroeconomía I", semestre: 3, requisitos: ["Economía I"] },
+      { nombre: "Matemáticas III", semestre: 3, requisitos: ["Matemáticas II"] },
+      { nombre: "Estadística II", semestre: 3, requisitos: ["Estadística I"] },
+      { nombre: "Microeconomía II", semestre: 4, requisitos: ["Microeconomía I"] }
+      // Agrega el resto aquí...
+    ];
 
-  const handleChange = (field, value) => {
-    const key = `${selectedSubject.semesterId}-${selectedSubject.subject}`;
-    setSubjectInfo({
-      ...subjectInfo,
-      [key]: {
-        ...subjectInfo[key],
-        [field]: value,
-      },
-    });
-  };
+    function crearPensum() {
+      const contenedor = document.getElementById("contenedor-semestres");
+      for (let i = 1; i <= 9; i++) {
+        const divSemestre = document.createElement("div");
+        divSemestre.className = `semestre semestre-${i}`;
+        const titulo = document.createElement("h3");
+        titulo.textContent = `Semestre ${i}`;
+        divSemestre.appendChild(titulo);
+        const materiasDelSemestre = materias.filter(m => m.semestre === i);
+        materiasDelSemestre.forEach(materia => {
+          const divMateria = document.createElement("div");
+          divMateria.className = "materia bloqueada";
+          divMateria.textContent = materia.nombre;
+          divMateria.dataset.nombre = materia.nombre;
+          divMateria.dataset.requisitos = JSON.stringify(materia.requisitos);
 
-  const isComplete = (semesterId, subject) => {
-    const key = `${semesterId}-${subject}`;
-    const info = subjectInfo[key];
-    return info?.profesor && info?.nota1 && info?.nota2 && info?.nota3;
-  };
+          const extra = document.createElement("div");
+          extra.className = "info-extra";
 
-  return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-3xl italic text-center">Pénsum Interactivo</h1>
-      <p className="italic text-center">Haz clic en una materia para ingresar profesor y notas</p>
+          const inputProfesor = document.createElement("input");
+          inputProfesor.placeholder = "Nombre del profesor";
+          inputProfesor.type = "text";
 
-      {semesters.map((sem) => (
-        <div key={sem.id} className="rounded-2xl p-4 shadow" style={{ backgroundColor: sem.color }}>
-          <h2 className="text-xl font-semibold mb-2 italic">{sem.name}</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {sem.subjects.map((subj) => {
-              const complete = isComplete(sem.id, subj);
-              return (
-                <button
-                  key={subj}
-                  onClick={() => handleSubjectClick(sem.id, subj)}
-                  className={`p-2 rounded-xl text-left font-[Times New Roman] bg-white/60 hover:bg-white transition border border-gray-300 ${complete ? "line-through" : ""}`}
-                >
-                  {subj}
-                </button>
-              );
-            })}
-          </div>
+          const inputNota1 = document.createElement("input");
+          inputNota1.placeholder = "Nota 1";
+          inputNota1.type = "number";
 
-          {selectedSubject?.semesterId === sem.id && (
-            <div className="mt-4 bg-white p-4 rounded-xl border">
-              <h3 className="font-bold italic mb-2">Editar información de la materia</h3>
-              <input
-                type="text"
-                placeholder="Nombre del profesor"
-                className="w-full mb-2 p-2 rounded border font-[Times New Roman]"
-                value={subjectInfo[`${sem.id}-${selectedSubject.subject}`]?.profesor || ""}
-                onChange={(e) => handleChange("profesor", e.target.value)}
-              />
-              <div className="grid grid-cols-3 gap-2">
-                {[1, 2, 3].map((n) => (
-                  <input
-                    key={n}
-                    type="number"
-                    step="0.01"
-                    placeholder={`Nota ${n}`}
-                    className="p-2 rounded border font-[Times New Roman]"
-                    value={subjectInfo[`${sem.id}-${selectedSubject.subject}`]?.[`nota${n}`] || ""}
-                    onChange={(e) => handleChange(`nota${n}`, e.target.value)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
+          const inputNota2 = document.createElement("input");
+          inputNota2.placeholder = "Nota 2";
+          inputNota2.type = "number";
+
+          const inputNota3 = document.createElement("input");
+          inputNota3.placeholder = "Nota 3";
+          inputNota3.type = "number";
+
+          const botonGuardar = document.createElement("button");
+          botonGuardar.textContent = "Guardar";
+          botonGuardar.onclick = () => {
+            const n1 = parseFloat(inputNota1.value);
+            const n2 = parseFloat(inputNota2.value);
+            const n3 = parseFloat(inputNota3.value);
+            if (isNaN(n1) || isNaN(n2) || isNaN(n3)) {
+              alert("Todas las notas deben ser números válidos.");
+              return;
+            }
+            const promedio = (n1 + n2 + n3) / 3;
+            if (promedio >= 3) {
+              divMateria.classList.remove("bloqueada");
+              divMateria.classList.add("aprobada");
+              extra.innerHTML += `<p>Profesor: ${inputProfesor.value}</p><p>Promedio: ${promedio.toFixed(2)}</p>`;
+              divMateria.appendChild(extra);
+              divMateria.removeChild(botonGuardar);
+            } else {
+              alert("Promedio insuficiente para aprobar.");
+            }
+          };
+
+          extra.append(inputProfesor, inputNota1, inputNota2, inputNota3, botonGuardar);
+          divMateria.appendChild(extra);
+
+          divMateria.addEventListener("click", () => {
+            if (divMateria.classList.contains("bloqueada") && !cumpleRequisitos(materia)) {
+              alert("No cumple los requisitos.");
+              return;
+            }
+            extra.style.display = extra.style.display === "block" ? "none" : "block";
+          });
+
+          divSemestre.appendChild(divMateria);
+        });
+        contenedor.appendChild(divSemestre);
+      }
+      actualizarBloqueos();
+    }
+
+    function cumpleRequisitos(materia) {
+      const requisitos = materia.requisitos || [];
+      return requisitos.every(nombre => {
+        const materiaDOM = document.querySelector(`.materia[data-nombre="${nombre}"]`);
+        return materiaDOM && materiaDOM.classList.contains("aprobada");
+      });
+    }
+
+    function actualizarBloqueos() {
+      document.querySelectorAll(".materia").forEach(materia => {
+        const requisitos = JSON.parse(materia.dataset.requisitos || "[]");
+        const puedeDesbloquear = requisitos.every(req => {
+          const reqDOM = document.querySelector(`.materia[data-nombre="${req}"]`);
+          return reqDOM && reqDOM.classList.contains("aprobada");
+        });
+        if (puedeDesbloquear || requisitos.length === 0) {
+          materia.classList.remove("bloqueada");
+        }
+      });
+    }
+
+    crearPensum();
+  </script>
+</body>
+</html>
